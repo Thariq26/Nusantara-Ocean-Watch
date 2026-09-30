@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import ErrorBoundary from './ErrorBoundary';
 import { Analytics } from '@vercel/analytics/react';
+import { injectSpeedInsights } from '@vercel/speed-insights';
 import './index.css';
+
+injectSpeedInsights();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

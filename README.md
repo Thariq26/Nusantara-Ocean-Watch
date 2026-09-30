@@ -137,18 +137,6 @@ Pastikan komputer Anda telah terinstal:
    http://localhost:5173
    ```
 
-### Membangun Versi Produksi (Production Build)
-
-Untuk mengompilasi dan mengoptimasi aplikasi menjadi aset statis siap rilis:
-```bash
-npm run build
-```
-Hasil kompilasi siap saji akan berada di direktori `dist/`. Anda dapat menguji pratinjau produksi dengan perintah:
-```bash
-npm run preview
-```
-
----
 
 ## 👤 Informasi Pengembang
 

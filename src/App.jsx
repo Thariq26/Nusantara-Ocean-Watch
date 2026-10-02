@@ -1422,26 +1422,26 @@ const LeafletMap = ({ coordinates, onLocationChange, marineData, forecastData, i
   }, [coordinates, marineData, isLand, showWaterAnimation, showWaves, showCurrents]);
 
   return (
-    <div className="relative isolate z-10 w-full h-[500px] lg:h-[540px] rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-slate-100">
+    <div className="relative isolate z-10 w-full h-[360px] sm:h-[460px] lg:h-[540px] rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-slate-100">
       {/* Switcher Layer Peta Dasar di Pojok Kiri Atas Peta */}
-      <div className="absolute top-3 left-12 z-20 flex items-center whitespace-nowrap bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border border-slate-200/90 text-[11px] font-semibold text-slate-700 select-none">
+      <div className="absolute top-3 left-12 z-20 flex items-center whitespace-nowrap bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl shadow-md border border-slate-200/90 text-[10px] sm:text-[11px] font-semibold text-slate-700 select-none">
         <button
           onClick={() => handleLayerChange('osm')}
-          className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'osm' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'osm' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
           title="OpenStreetMap: Peta Komunitas 100% Gratis & Open-Source"
         >
           OSM
         </button>
         <button
           onClick={() => handleLayerChange('satellite')}
-          className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'satellite' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'satellite' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
           title="Citra Satelit Dunia Gratis (Esri)"
         >
           Satelit
         </button>
         <button
           onClick={() => handleLayerChange('voyager')}
-          className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'voyager' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${activeLayer === 'voyager' ? 'bg-sky-600 text-white shadow-2xs' : 'hover:bg-slate-100'}`}
           title="Carto Voyager: Tampilan Terang Maritim"
         >
           Maritim
@@ -1449,18 +1449,20 @@ const LeafletMap = ({ coordinates, onLocationChange, marineData, forecastData, i
       </div>
 
       {/* Floating Status Panduan / Peringatan di Pojok Kanan (Ditempatkan di Baris Bawah agar Tidak Menimpa Layer) */}
-      <div className={`absolute top-14 right-3 z-20 backdrop-blur-md px-3 py-1.5 rounded-xl border shadow-sm pointer-events-none flex items-center gap-1.5 text-xs font-medium transition-all ${
+      <div className={`absolute top-14 right-3 z-20 backdrop-blur-md px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border shadow-sm pointer-events-none flex items-center gap-1.5 text-[11px] sm:text-xs font-medium transition-all ${
         isLand ? 'bg-amber-500/95 text-white border-amber-600 shadow-md font-semibold' : 'bg-white/95 text-slate-700 border-slate-200/90'
       }`}>
         {isLand ? (
           <>
             <AlertTriangle className="w-3.5 h-3.5 text-amber-100 shrink-0" />
-            <span className="whitespace-nowrap">Titik di Daratan (Pilih Area Biru Laut)</span>
+            <span className="whitespace-nowrap hidden sm:inline">Titik di Daratan (Pilih Area Biru Laut)</span>
+            <span className="whitespace-nowrap sm:hidden">Titik di Daratan</span>
           </>
         ) : (
           <>
             <Navigation className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-            <span className="whitespace-nowrap">Klik peta untuk pindah posisi</span>
+            <span className="whitespace-nowrap hidden sm:inline">Klik peta untuk pindah posisi</span>
+            <span className="whitespace-nowrap sm:hidden">Klik untuk pindah</span>
           </>
         )}
       </div>
@@ -1883,7 +1885,13 @@ const HourlyForecastChart = ({ hourlyData }) => {
 
           {/* Interactive Hit Areas & Circles */}
           {coords.map((c, i) => (
-            <g key={i} onMouseEnter={() => setHoverIndex(i)}>
+            <g
+              key={i}
+              onMouseEnter={() => setHoverIndex(i)}
+              onTouchStart={() => setHoverIndex(i)}
+              onClick={() => setHoverIndex(i)}
+              className="cursor-pointer"
+            >
               <circle
                 cx={c.x}
                 cy={c.y}
@@ -1924,18 +1932,18 @@ const HourlyForecastChart = ({ hourlyData }) => {
           })}
         </svg>
 
-        {/* Hover Tooltip Overlay */}
+        {/* Hover / Touch Tooltip Overlay */}
         {activePoint && (
           <div
-            className="absolute top-2 pointer-events-none bg-slate-900/90 backdrop-blur-md text-white px-3 py-1.5 rounded-xl shadow-xl text-[11px] border border-slate-700 transform -translate-x-1/2 flex items-center gap-2"
-            style={{ left: `${(activePoint.x / chartWidth) * 100}%` }}
+            className="absolute top-2 pointer-events-none bg-slate-900/95 backdrop-blur-md text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl shadow-xl text-[10px] sm:text-[11px] border border-slate-700 transform -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 max-w-[92vw] whitespace-nowrap z-20"
+            style={{ left: `${Math.max(18, Math.min(82, (activePoint.x / chartWidth) * 100))}%` }}
           >
             <span className="font-mono text-slate-300 font-bold">{activePoint.point.time}</span>
             <span>•</span>
             <span className="font-bold text-sky-300">
               {isWave ? `Ombak: ${activePoint.val.toFixed(2)} m` : `Angin: ${activePoint.val.toFixed(1)} km/h`}
             </span>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] text-slate-400 hidden sm:inline">
               (Periode: {activePoint.point.period.toFixed(1)}s)
             </span>
           </div>
@@ -2039,13 +2047,19 @@ const CoastalVisionScanner = ({ marineData, forecastData }) => {
         )}
 
         {/* Telemetry Corner Stats */}
-        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-slate-300/80 space-y-0.5 pointer-events-none">
+        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-slate-300/80 space-y-0.5 pointer-events-none hidden sm:block">
           <div>LAT: -{Math.abs(Number(marineData?.latitude ?? 0)).toFixed(4)}° | LNG: {Number(marineData?.longitude ?? 0).toFixed(4)}°</div>
           <div>INFERENCE: 12.4ms • RESOLUTION: 1920x1080 • DETECTED: 3 ZONES</div>
         </div>
 
-        <div className="absolute bottom-2 right-3 text-[10px] font-mono text-slate-400 pointer-events-none">
+        <div className="absolute bottom-2 right-3 text-[10px] font-mono text-slate-400 pointer-events-none hidden sm:block">
           SCAN TERAKHIR: {lastScanTime}
+        </div>
+
+        {/* Mobile Compact Telemetry Bar */}
+        <div className="absolute bottom-1.5 left-2 right-2 text-[9px] font-mono text-slate-300/90 flex items-center justify-between pointer-events-none sm:hidden bg-slate-950/70 backdrop-blur-xs px-2 py-0.5 rounded">
+          <span>YOLO-COASTAL • 3 ZONES</span>
+          <span className="text-slate-400">SCAN: {lastScanTime}</span>
         </div>
       </div>
 
@@ -2072,13 +2086,13 @@ const AiModelHubModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[2000] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[2000] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden my-4 sm:my-8 animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="bg-gradient-to-r from-sky-900 via-indigo-900 to-slate-900 p-6 text-white flex items-start justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl shadow-lg">
-              <Brain className="w-7 h-7 text-white" />
+        <div className="bg-gradient-to-r from-sky-900 via-indigo-900 to-slate-900 p-4 sm:p-6 text-white flex items-start justify-between">
+          <div className="flex items-center gap-3 sm:gap-3.5">
+            <div className="p-2.5 sm:p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl shadow-lg shrink-0">
+              <Brain className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -2087,9 +2101,9 @@ const AiModelHubModal = ({ isOpen, onClose }) => {
                 </span>
                 <span className="text-xs text-cyan-200">v2.4 Production</span>
               </div>
-              <h2 className="text-xl font-bold">Pusat Model Machine Learning Nusantara OceanWatch</h2>
-              <div className="mt-2 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[11px] font-mono text-cyan-200">
+              <h2 className="text-base sm:text-xl font-bold">Pusat Model Machine Learning Nusantara OceanWatch</h2>
+              <div className="mt-1.5 sm:mt-2 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px] sm:text-[11px] font-mono text-cyan-200">
                   <ShieldCheck className="w-3.5 h-3.5 text-cyan-300" />
                   Author: <strong className="text-white">{APP_AUTHOR.signature}</strong>
                 </span>
@@ -2099,16 +2113,16 @@ const AiModelHubModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer shrink-0 ml-2"
           >
             ✕
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto text-slate-700 text-xs sm:text-sm">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[80vh] overflow-y-auto text-slate-700 text-xs sm:text-sm">
           {/* Summary Box */}
-          <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200 text-sky-900 space-y-1">
+          <div className="p-3.5 sm:p-4 bg-sky-50 rounded-2xl border border-sky-200 text-sky-900 space-y-1">
             <h4 className="font-bold flex items-center gap-1.5 text-sm">
               <Target className="w-4 h-4 text-sky-600" /> Ringkasan Pipeline Sains Data & Kecerdasan Buatan
             </h4>
@@ -2352,10 +2366,10 @@ const TabFisherman = ({ marine, forecast, isLand, coordinates, onSelectLocation 
     <div className="space-y-6">
       {/* MODEL ML #2: SMART MARITIME RISK CLASSIFIER & XAI EXPLANATION */}
       {!isLand && (
-        <div className="p-6 rounded-2xl bg-white border border-indigo-100 shadow-sm relative overflow-hidden bg-gradient-to-br from-indigo-50/40 via-white to-sky-50/20">
+        <div className="p-4 sm:p-6 rounded-2xl bg-white border border-indigo-100 shadow-sm relative overflow-hidden bg-gradient-to-br from-indigo-50/40 via-white to-sky-50/20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-indigo-100/60 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-indigo-600 text-white rounded-xl shadow-xs">
+              <div className="p-2.5 bg-indigo-600 text-white rounded-xl shadow-xs shrink-0">
                 <Brain className="w-6 h-6" />
               </div>
               <div>
@@ -2365,15 +2379,15 @@ const TabFisherman = ({ marine, forecast, isLand, coordinates, onSelectLocation 
                   </span>
                   <span className="text-xs text-slate-400 font-mono">Ensemble + Softmax</span>
                 </div>
-                <h2 className="text-lg font-bold text-slate-800">
+                <h2 className="text-base sm:text-lg font-bold text-slate-800">
                   Klasifikasi Kelayakan Melaut & Indeks Risiko
                 </h2>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <span className="text-[10px] text-slate-400 block font-medium flex items-center justify-end gap-1">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+              <div className="text-left sm:text-right">
+                <span className="text-[10px] text-slate-400 block font-medium flex items-center sm:justify-end gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   Confidence Score
                 </span>
@@ -2390,12 +2404,12 @@ const TabFisherman = ({ marine, forecast, isLand, coordinates, onSelectLocation 
 
           {/* Softmax Probability Distribution Bar */}
           <div className="mt-4">
-            <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs mb-1.5 font-medium gap-1">
               <span className="text-slate-600 font-semibold flex items-center gap-1.5">
                 <Cpu className="w-3.5 h-3.5 text-indigo-500" />
                 Distribusi Probabilitas Softmax:
               </span>
-              <div className="flex items-center gap-3 text-[11px] font-mono">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] font-mono">
                 <span className="text-emerald-700 font-bold">Aman: {((aiSafety?.probabilities?.safe ?? 0.8) * 100).toFixed(1)}%</span>
                 <span className="text-amber-700 font-bold">Waspada: {((aiSafety?.probabilities?.caution ?? 0.15) * 100).toFixed(1)}%</span>
                 <span className="text-rose-700 font-bold">Bahaya: {((aiSafety?.probabilities?.danger ?? 0.05) * 100).toFixed(1)}%</span>
@@ -2455,7 +2469,7 @@ const TabFisherman = ({ marine, forecast, isLand, coordinates, onSelectLocation 
 
       {/* MODEL ML #3: RADAR ZONA POTENSI PENANGKAPAN IKAN (ZPF) */}
       {!isLand && (
-        <div className="p-6 rounded-2xl bg-white border border-emerald-100 shadow-sm relative overflow-hidden bg-gradient-to-br from-emerald-50/40 via-white to-teal-50/20">
+        <div className="p-4 sm:p-6 rounded-2xl bg-white border border-emerald-100 shadow-sm relative overflow-hidden bg-gradient-to-br from-emerald-50/40 via-white to-teal-50/20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-emerald-600 text-white rounded-xl shadow-xs">
@@ -3713,22 +3727,22 @@ const WeeklyTimelineSlideBar = ({ weeklyData, isLand, activeTab, onOpenFullForec
               {sectorInsight.desc}
             </p>
 
-            <div className="flex items-center gap-3 font-mono text-[10px] bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 shrink-0">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 font-mono text-[10px] bg-white/10 p-2 sm:px-3 sm:py-1.5 rounded-lg border border-white/10 shrink-0">
               <div>
                 <span className="text-slate-400 block text-[9px]">OMBAK MAX</span>
                 <span className="font-bold text-white">{activeDay.waveMax !== null ? `${activeDay.waveMax.toFixed(2)}m` : '-'}</span>
               </div>
-              <span className="text-slate-600">•</span>
+              <span className="hidden sm:inline text-slate-600">•</span>
               <div>
                 <span className="text-slate-400 block text-[9px]">ANGIN MAX</span>
                 <span className="font-bold text-white">{activeDay.windSpeedMax !== null ? `${activeDay.windSpeedMax.toFixed(1)} km/h` : '-'}</span>
               </div>
-              <span className="text-slate-600">•</span>
+              <span className="hidden sm:inline text-slate-600">•</span>
               <div>
                 <span className="text-slate-400 block text-[9px]">SUHU</span>
                 <span className="font-bold text-white">{activeDay.tempMin}° - {activeDay.tempMax}°C</span>
               </div>
-              <span className="text-slate-600">•</span>
+              <span className="hidden sm:inline text-slate-600">•</span>
               <div>
                 <span className="text-slate-400 block text-[9px]">HUJAN</span>
                 <span className="font-bold text-white">{activeDay.precip.toFixed(1)} mm</span>
@@ -4188,7 +4202,13 @@ const TabWeeklyForecast = ({ weeklyData, isLand }) => {
               const isHovered = hoverIndex === i;
 
               return (
-                <g key={i} onMouseEnter={() => setHoverIndex(i)}>
+                <g
+                  key={i}
+                  onMouseEnter={() => setHoverIndex(i)}
+                  onTouchStart={() => setHoverIndex(i)}
+                  onClick={() => setHoverIndex(i)}
+                  className="cursor-pointer"
+                >
                   <circle
                     cx={c.x}
                     cy={c.y}
@@ -4231,27 +4251,27 @@ const TabWeeklyForecast = ({ weeklyData, isLand }) => {
             })}
           </svg>
 
-          {/* Hover Tooltip Overlay */}
+          {/* Hover / Touch Tooltip Overlay */}
           {activePoint && (
             <div
-              className="absolute top-3 pointer-events-none bg-slate-900/95 backdrop-blur-md text-white px-3.5 py-2 rounded-xl shadow-xl text-[11px] border border-slate-700 transform -translate-x-1/2 flex items-center gap-2.5 z-30"
-              style={{ left: `${Math.max(15, Math.min(85, (activePoint.x / chartWidth) * 100))}%` }}
+              className="absolute top-3 pointer-events-none bg-slate-900/95 backdrop-blur-md text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl shadow-xl text-[10px] sm:text-[11px] border border-slate-700 transform -translate-x-1/2 flex items-center gap-1.5 sm:gap-2.5 z-30 max-w-[92vw] whitespace-nowrap"
+              style={{ left: `${Math.max(18, Math.min(82, (activePoint.x / chartWidth) * 100))}%` }}
             >
               <div className="font-bold text-cyan-300 font-mono">
-                {activePoint.data.dateInfo.full} ({activePoint.data.relLabel})
+                {activePoint.data.dateInfo.dayDate}/{activePoint.data.dateInfo.monthNum} ({activePoint.data.relLabel})
               </div>
               <span>•</span>
               <div className="flex items-center gap-1">
                 <span>{activePoint.data.weatherInfo.icon}</span>
-                <span>{activePoint.data.weatherInfo.label}</span>
+                <span className="hidden sm:inline">{activePoint.data.weatherInfo.label}</span>
               </div>
               <span>•</span>
               <div className="font-bold text-white">
                 {isWave
-                  ? `Ombak: ${activePoint.data.waveMax !== null ? `${activePoint.data.waveMax.toFixed(2)} m` : '-'}`
-                  : `Angin: ${activePoint.data.windSpeedMax !== null ? `${activePoint.data.windSpeedMax.toFixed(1)} km/h` : '-'}`}
+                  ? `${activePoint.data.waveMax !== null ? `${activePoint.data.waveMax.toFixed(2)}m` : '-'}`
+                  : `${activePoint.data.windSpeedMax !== null ? `${activePoint.data.windSpeedMax.toFixed(1)}km/h` : '-'}`}
               </div>
-              <div className="text-[10px] text-slate-400">
+              <div className="text-[10px] text-slate-400 hidden sm:inline">
                 Suhu: {activePoint.data.tempMin}° - {activePoint.data.tempMax}°C
               </div>
             </div>
@@ -4777,7 +4797,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 relative">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2 relative">
               {/* FIELD SEARCH EXPANDABLE (ICON YANG MELEBAR JIKA DIKLIK) */}
               <div
                 ref={searchContainerRef}
@@ -4862,9 +4882,10 @@ export default function App() {
                 )}
               </div>
 
+              {/* Tombol Model ML & Lokasi Saya (disembunyikan saat search terbuka di mobile agar pas di layar) */}
               <button
                 onClick={() => setShowAiModal(true)}
-                className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs border border-indigo-400/40 transition-all cursor-pointer shrink-0"
+                className={`${isSearchExpanded ? 'hidden sm:flex' : 'flex'} items-center gap-1.5 px-2.5 sm:px-3 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs border border-indigo-400/40 transition-all cursor-pointer shrink-0`}
                 title="Buka Pusat Model Oseanografi & Sains Data"
               >
                 <Brain className="w-4 h-4 text-cyan-300" />
@@ -4875,7 +4896,7 @@ export default function App() {
               <button
                 onClick={handleGetCurrentLocation}
                 disabled={isLocating}
-                className="flex items-center gap-1.5 px-3 py-2 bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs border border-cyan-400/40 transition-all cursor-pointer shrink-0 disabled:opacity-50"
+                className={`${isSearchExpanded ? 'hidden sm:flex' : 'flex'} items-center gap-1.5 px-2.5 sm:px-3 py-2 bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs border border-cyan-400/40 transition-all cursor-pointer shrink-0 disabled:opacity-50`}
                 title="Gunakan Lokasi GPS Saya Saat Ini"
               >
                 <Crosshair className={`w-4 h-4 ${isLocating ? 'animate-spin' : ''}`} />
@@ -4885,7 +4906,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="bg-sky-950/40 border-t border-sky-800/40 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto scrollbar-none">
+        <div className="bg-sky-950/40 border-t border-sky-800/40 px-3 sm:px-6 lg:px-8 py-2 overflow-x-auto scrollbar-none touch-pan-x">
           <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs">
             <span className="text-cyan-200/80 font-bold shrink-0 flex items-center gap-1">
               <Anchor className="w-3 h-3 text-cyan-400" />
@@ -4918,7 +4939,7 @@ export default function App() {
       )}
 
       {/* LAYOUT UTAMA */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
+      <main className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 w-full flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* KOLOM KIRI (1/3 di Desktop) */}
           <div className="lg:col-span-4 space-y-4">
@@ -5014,65 +5035,66 @@ export default function App() {
                 <span>Detail Arsitektur ML</span>
               </button>
             </div>
-            <div className="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center overflow-x-auto scrollbar-none gap-1.5">
+            <div className="bg-white p-1 sm:p-1.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center overflow-x-auto scrollbar-none gap-1 sm:gap-1.5 touch-pan-x">
               <button
                 onClick={() => setActiveTab('nelayan')}
-                className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                className={`flex-1 min-w-[95px] sm:min-w-[120px] py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   activeTab === 'nelayan'
                     ? 'bg-sky-900 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Anchor className="w-4 h-4" />
+                <Anchor className="w-4 h-4 shrink-0" />
                 <span>Nelayan</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('transportasi')}
-                className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                className={`flex-1 min-w-[105px] sm:min-w-[120px] py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   activeTab === 'transportasi'
                     ? 'bg-sky-900 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Ship className="w-4 h-4" />
+                <Ship className="w-4 h-4 shrink-0" />
                 <span>Transportasi</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('peselancar')}
-                className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                className={`flex-1 min-w-[95px] sm:min-w-[120px] py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   activeTab === 'peselancar'
                     ? 'bg-sky-900 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Waves className="w-4 h-4" />
+                <Waves className="w-4 h-4 shrink-0" />
                 <span>Peselancar</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('pariwisata')}
-                className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                className={`flex-1 min-w-[95px] sm:min-w-[120px] py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   activeTab === 'pariwisata'
                     ? 'bg-sky-900 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Umbrella className="w-4 h-4" />
+                <Umbrella className="w-4 h-4 shrink-0" />
                 <span>Pariwisata</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('mingguan')}
-                className={`flex-1 min-w-[160px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                className={`flex-1 min-w-[125px] sm:min-w-[160px] py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   activeTab === 'mingguan'
                     ? 'bg-sky-900 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <CalendarDays className="w-4 h-4 text-cyan-400" />
-                <span>14 Hari (Histori & Prediksi)</span>
+                <CalendarDays className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>14 Hari</span>
+                <span className="hidden sm:inline">(Histori & Prediksi)</span>
               </button>
             </div>
 
